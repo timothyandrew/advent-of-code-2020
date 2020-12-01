@@ -1,0 +1,5 @@
+package impl
+
+func One() {
+
+}
