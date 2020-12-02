@@ -9,7 +9,10 @@ import (
 func main() {
 	args := os.Args[1:]
 
-	if args[0] == "1" {
+	switch args[0] {
+	case "1":
 		impl.One()
+	case "2":
+		impl.Two()
 	}
 }
