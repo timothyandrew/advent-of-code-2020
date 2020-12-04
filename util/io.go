@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func fileToLines(path string) []string {
+func FileToString(path string) string {
 	bytes, err := ioutil.ReadFile(path)
 
 	if err != nil {
@@ -17,10 +17,21 @@ func fileToLines(path string) []string {
 	// This assumes that the byte array contains UTF-8
 	s := string(bytes)
 	s = strings.Trim(s, " \n\t\r")
+	return s
+}
+
+func fileToLines(path string) []string {
+	s := FileToString(path)
 	return strings.Split(s, "\n")
 }
 
 func ReadFileRegexMatches(path string, re regexp.Regexp) [][]string {
+	line := FileToString(path)
+	matches := re.FindAllStringSubmatch(line, -1)
+	return matches
+}
+
+func ReadFileLinesRegexMatches(path string, re regexp.Regexp) [][]string {
 	lines := fileToLines(path)
 
 	var result [][]string

@@ -48,7 +48,7 @@ func traverse(lines [][]string) {
 
 func Three() {
 	re := regexp.MustCompile("([.#]+)")
-	lines := util.ReadFileRegexMatches("input/3.txt", *re)
+	lines := util.ReadFileLinesRegexMatches("input/3.txt", *re)
 
 	for i, line := range lines {
 		lines[i] = strings.Split(line[0], "")

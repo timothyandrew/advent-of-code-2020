@@ -22,7 +22,7 @@ func countRuneInString(c rune, s string) int {
 
 func Two() {
 	re := regexp.MustCompile("(\\d+)\\-(\\d+)\\s(\\w):\\s(\\w+)")
-	lines := util.ReadFileRegexMatches("input/2.txt", *re)
+	lines := util.ReadFileLinesRegexMatches("input/2.txt", *re)
 
 	// Part 1
 	valid := 0
