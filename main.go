@@ -18,5 +18,9 @@ func main() {
 		impl.Three()
 	case "4":
 		impl.Four()
+	case "5":
+		impl.Five()
+	case "6":
+		impl.Six()
 	}
 }
