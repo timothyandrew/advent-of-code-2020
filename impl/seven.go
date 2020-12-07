@@ -40,7 +40,22 @@ func parseRule(rule string) Rule {
 	return Rule{bag: Bag{color: from}, contains: contains}
 }
 
-func resolve(bag Bag, lookup map[Bag][]Bag) map[Bag]bool {
+func countBagsContainedIn(bag Bag, lookup map[Bag]Rule) int {
+	resolved := 1
+
+	rule, ok := lookup[bag]
+	if !ok {
+		return resolved
+	}
+
+	for bag, count := range rule.contains {
+		resolved += count * countBagsContainedIn(bag, lookup)
+	}
+
+	return resolved
+}
+
+func findRoots(bag Bag, lookup map[Bag][]Bag) map[Bag]bool {
 	resolved := make(map[Bag]bool)
 	resolved[bag] = true
 
@@ -50,7 +65,7 @@ func resolve(bag Bag, lookup map[Bag][]Bag) map[Bag]bool {
 	}
 
 	for _, bag := range bags {
-		for target := range resolve(bag, lookup) {
+		for target := range findRoots(bag, lookup) {
 			resolved[target] = true
 		}
 	}
@@ -71,9 +86,20 @@ func Seven() {
 		}
 	}
 
-	x := resolve(Bag{color: "shiny gold"}, containedBy)
+	x := findRoots(Bag{color: "shiny gold"}, containedBy)
 
 	// Subtract 1 because a shiny gold bag can't contain itself
 	fmt.Println("PART 1:", len(x)-1)
 
+	contains := make(map[Bag]Rule)
+
+	for _, line := range lines {
+		rule := parseRule(line)
+		contains[rule.bag] = rule
+	}
+
+	y := countBagsContainedIn(Bag{color: "shiny gold"}, contains)
+
+	// Subtract 1 because a shiny gold bag can't contain itself
+	fmt.Println("PART 2:", y-1)
 }
