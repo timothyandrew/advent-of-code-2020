@@ -20,7 +20,7 @@ func FileToString(path string) string {
 	return s
 }
 
-func fileToLines(path string) []string {
+func FileToLines(path string) []string {
 	s := FileToString(path)
 	return strings.Split(s, "\n")
 }
@@ -32,7 +32,7 @@ func ReadFileRegexMatches(path string, re regexp.Regexp) [][]string {
 }
 
 func ReadFileLinesRegexMatches(path string, re regexp.Regexp) [][]string {
-	lines := fileToLines(path)
+	lines := FileToLines(path)
 
 	var result [][]string
 	for _, line := range lines {
@@ -44,7 +44,7 @@ func ReadFileLinesRegexMatches(path string, re regexp.Regexp) [][]string {
 }
 
 func ReadFileInts(path string) []int {
-	strInts := fileToLines(path)
+	strInts := FileToLines(path)
 
 	var ints []int
 
