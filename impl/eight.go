@@ -13,6 +13,22 @@ type Instruction struct {
 	index  int
 }
 
+// Switch between jmp and nop
+func (i Instruction) toggleOpcode() Instruction {
+	result := i
+
+	switch result.opcode {
+	case "jmp":
+		result.opcode = "nop"
+	case "nop":
+		result.opcode = "jmp"
+	default:
+		panic(fmt.Sprintf("Don't know how to toggle opcode %v", i.opcode))
+	}
+
+	return result
+}
+
 type CPUState struct {
 	acc          int
 	ip           int
@@ -31,18 +47,24 @@ func parse(s string, index int) Instruction {
 }
 
 func tick(state CPUState) CPUState {
-	current := state.instructions[state.ip]
-
 	if state.ip == len(state.instructions) {
 		state.stopped = true
 		state.success = true
-		fmt.Println("Attempting to run an instruction after the last instruction. Stopping…\n")
+		// fmt.Println("Attempting to run an instruction after the last instruction. Stopping…")
 		return state
 	}
 
+	if state.ip > len(state.instructions) {
+		state.stopped = true
+		// fmt.Println("IP went too far over. Stopping…")
+		return state
+	}
+
+	current := state.instructions[state.ip]
+
 	if _, ok := state.seen[current]; ok {
 		state.stopped = true
-		fmt.Printf("Seeing instruction (%v) for the second time! Stopping…\n", current)
+		// fmt.Printf("Seeing instruction (%v) for the second time! Stopping…\n", current)
 		return state
 	}
 
@@ -65,6 +87,17 @@ func tick(state CPUState) CPUState {
 	return next
 }
 
+func replaceInSlice(slice []Instruction, index int, to Instruction) (result []Instruction) {
+	for i, instruction := range slice {
+		if index == i {
+			result = append(result, to)
+		} else {
+			result = append(result, instruction)
+		}
+	}
+	return
+}
+
 func Eight() {
 	lines := util.FileToLines("input/8.txt")
 
@@ -74,10 +107,27 @@ func Eight() {
 	}
 
 	state := CPUState{instructions: instructions, seen: make(map[Instruction]bool)}
-
 	for !state.stopped {
 		state = tick(state)
 	}
 
 	fmt.Println("PART 1: ", state.acc)
+
+	for i, instruction := range instructions {
+		state = CPUState{instructions: instructions, seen: make(map[Instruction]bool)}
+
+		if instruction.opcode == "acc" {
+			continue
+		}
+
+		state.instructions = replaceInSlice(state.instructions, i, instruction.toggleOpcode())
+
+		for !state.stopped {
+			state = tick(state)
+		}
+
+		if state.success {
+			fmt.Println("PART 2: Terminated! Acc:", state.acc)
+		}
+	}
 }
