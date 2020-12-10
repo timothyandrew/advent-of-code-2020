@@ -28,5 +28,7 @@ func main() {
 		impl.Eight()
 	case "9":
 		impl.Nine()
+	case "10":
+		impl.Ten()
 	}
 }
