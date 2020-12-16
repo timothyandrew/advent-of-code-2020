@@ -36,5 +36,7 @@ func main() {
 		impl.Twelve()
 	case "14":
 		impl.Fourteen()
+	case "16":
+		impl.Sixteen()
 	}
 }
